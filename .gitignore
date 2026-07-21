@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.db
+attendance.db
+.env
+cloudflared.exe

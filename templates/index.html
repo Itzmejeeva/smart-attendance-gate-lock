@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Face Recognition Attendance & Gate Lock</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Background Glow Elements -->
+    <div class="glow-bg glow-purple"></div>
+    <div class="glow-bg glow-cyan"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header animate-fade-in">
+            <div class="brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-shield-halved brand-icon"></i>
+                    <span class="logo-glow"></span>
+                </div>
+                <div>
+                    <h1>SMART ATTENDANCE & GATE LOCK</h1>
+                    <p class="subtitle">Deep Learning Face Recognition Biometrics</p>
+                </div>
+            </div>
+            <div class="header-status" style="display: flex; align-items: center; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="status-indicator online"></span>
+                    <span class="status-text">YuNet & SFace Online</span>
+                </div>
+                <a href="/logout" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; transition: var(--transition);">
+                    <i class="fa-solid fa-lock"></i> Lock System
+                </a>
+            </div>
+        </header>
+
+        <!-- Real-Time Metrics Row -->
+        <section class="stats-row animate-fade-in" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+            <div class="stat-card glass-card" style="position: relative; overflow: hidden; padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(0, 242, 254, 0.15); background: rgba(0, 242, 254, 0.02); box-shadow: 0 0 25px rgba(0, 242, 254, 0.05); display: flex; align-items: center; justify-content: space-between; transition: var(--transition);">
+                <div>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Males Checked In</span>
+                    <h2 id="stat-boys" style="font-size: 2.25rem; font-weight: 800; color: var(--primary); text-shadow: 0 0 15px rgba(0, 242, 254, 0.4); margin-top: 0.25rem;">0</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: var(--radius-sm); background: rgba(0, 242, 254, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary);">
+                    <i class="fa-solid fa-mars"></i>
+                </div>
+            </div>
+            <div class="stat-card glass-card" style="position: relative; overflow: hidden; padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(168, 85, 247, 0.15); background: rgba(168, 85, 247, 0.02); box-shadow: 0 0 25px rgba(168, 85, 247, 0.05); display: flex; align-items: center; justify-content: space-between; transition: var(--transition);">
+                <div>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Females Checked In</span>
+                    <h2 id="stat-girls" style="font-size: 2.25rem; font-weight: 800; color: var(--secondary); text-shadow: 0 0 15px rgba(168, 85, 247, 0.4); margin-top: 0.25rem;">0</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: var(--radius-sm); background: rgba(168, 85, 247, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--secondary);">
+                    <i class="fa-solid fa-venus"></i>
+                </div>
+            </div>
+            <div class="stat-card glass-card" style="position: relative; overflow: hidden; padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(239, 68, 68, 0.15); background: rgba(239, 68, 68, 0.02); box-shadow: 0 0 25px rgba(239, 68, 68, 0.05); display: flex; align-items: center; justify-content: space-between; transition: var(--transition);">
+                <div>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Intruders Rejected</span>
+                    <h2 id="stat-intruders" style="font-size: 2.25rem; font-weight: 800; color: var(--danger); text-shadow: 0 0 15px rgba(239, 68, 68, 0.4); margin-top: 0.25rem;">0</h2>
+                </div>
+                <div style="width: 48px; height: 48px; border-radius: var(--radius-sm); background: rgba(239, 68, 68, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--danger);">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <main class="app-grid">
+            
+            <!-- Left Panel: Webcam Stream & Register -->
+            <section class="panel glass animate-slide-up-1">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-camera"></i> Camera Control</h2>
+                    <p>Register new credentials or scan face to unlock security gate.</p>
+                </div>
+
+                <!-- Webcam Stream Container -->
+                <div class="video-wrapper">
+                    <video id="webcam-video" autoplay playsinline muted class="camera-stream"></video>
+                    <canvas id="webcam-canvas" style="display: none;"></canvas>
+                    <img id="verify-overlay-img" class="overlay-img" style="display: none;" alt="Verification overlay">
+                    
+                    <!-- Scanner overlay line -->
+                    <div class="scanner-line"></div>
+                    <div class="video-overlay" id="webcam-overlay">
+                        <i class="fa-solid fa-video-slash overlay-icon"></i>
+                        <p>Camera Connection Required</p>
+                        <button class="action-btn-sm" id="btn-start-camera">
+                            <i class="fa-solid fa-power-off"></i> Initialize Camera
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Switches -->
+                <div class="webcam-toggles">
+                    <div class="toggle-control">
+                        <span class="toggle-label"><i class="fa-solid fa-robot"></i> Hands-Free Auto Check-in</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-auto-verify" disabled>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <button class="action-btn-sm btn-secondary disabled" id="btn-manual-verify" disabled>
+                        <i class="fa-solid fa-expand"></i> Verify Once
+                    </button>
+                </div>
+
+                <div class="panel-divider"></div>
+
+                <!-- Registration Form -->
+                <div class="registration-form">
+                    <h3><i class="fa-solid fa-user-plus"></i> Credentials Register</h3>
+                    <div class="registration-inputs" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div class="input-group">
+                            <input type="text" id="reg-name" placeholder="Enter Full Name" autocomplete="off" disabled>
+                        </div>
+                        <div class="gender-selection" style="display: flex; align-items: center; gap: 1.5rem; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.05); padding: 0.65rem 1rem; border-radius: var(--radius-sm);">
+                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Gender:</span>
+                            <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: var(--text-secondary);">
+                                <input type="radio" name="reg-gender" value="Male" checked style="accent-color: var(--secondary); cursor: pointer;"> ♂ Male
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: var(--text-secondary);">
+                                <input type="radio" name="reg-gender" value="Female" style="accent-color: var(--primary); cursor: pointer;"> ♀ Female
+                            </label>
+                        </div>
+                        <button class="action-btn disabled" id="btn-register" disabled style="width: 100%;">
+                            <span class="btn-glow"></span>
+                            <i class="fa-solid fa-id-card"></i> Register Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Registered Users List -->
+                <div class="registry-box">
+                    <h4>Registered Personnel</h4>
+                    <div class="registry-empty" id="registry-empty-msg">No authorized personnel registered.</div>
+                    <div class="registry-grid" id="registry-users-list" style="display: none; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.75rem; max-height: 250px; overflow-y: auto; padding-right: 0.25rem; margin-top: 0.75rem;">
+                        <!-- JS will inject registered cards -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Virtual Gate Status -->
+            <section class="panel glass animate-slide-up-2">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-key"></i> Gate Lock Access</h2>
+                    <p>Security lock status and live check-in credentials match validation.</p>
+                </div>
+
+                <!-- Gate Visualizer Card -->
+                <div class="gate-status-card locked" id="gate-card-status">
+                    <div class="gate-circle">
+                        <div class="gate-circle-glow"></div>
+                        <i class="fa-solid fa-lock" id="gate-icon"></i>
+                    </div>
+                    <h3 id="gate-text-status">GATE SECURED</h3>
+                    <p id="gate-subtext-status">Biometric verification required to unlock</p>
+                </div>
+
+                <!-- Active Scan Match Card -->
+                <div class="match-summary-card" id="match-summary-box" style="display: none;">
+                    <div class="match-card-header">
+                        <span class="match-badge" id="match-result-badge">Access Granted</span>
+                        <div class="match-title">
+                            <span class="match-label">Biometric Match</span>
+                            <h3 id="match-user-name">Jeeva</h3>
+                        </div>
+                    </div>
+                    <div class="match-card-body">
+                        <p>Confidence score of SFace cosine similarity matching is <strong id="match-score-val">0.824</strong> (Threshold: 0.363).</p>
+                    </div>
+                </div>
+
+                <!-- Intruder Alert card (Hidden) -->
+                <div class="match-summary-card alert" id="intruder-summary-box" style="display: none;">
+                    <div class="match-card-header">
+                        <span class="match-badge alert-badge">Access Denied</span>
+                        <div class="match-title">
+                            <span class="match-label">Unauthorized Access</span>
+                            <h3>Unknown Intruder</h3>
+                        </div>
+                    </div>
+                    <div class="match-card-body">
+                        <p>No matching facial embedding profile found. Gate lock remains secured.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Attendance Logs Section -->
+        <section class="panel glass logs-panel animate-slide-up-3">
+            <div class="logs-header" style="border-bottom: none; padding-bottom: 0; display: flex; justify-content: space-between; align-items: center;">
+                <h2><i class="fa-solid fa-list-check"></i> Security Check Logs</h2>
+                <div class="log-actions" style="display: flex; gap: 1.25rem;">
+                    <button class="clear-logs-btn" id="btn-download-pdf" title="Download current category list as PDF" style="background: transparent; border: none; color: var(--secondary); font-family: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: var(--transition);">
+                        <i class="fa-solid fa-file-pdf"></i> Export Login PDF
+                    </button>
+                    <button class="clear-logs-btn" id="btn-clear-logs" title="Clear logs table">
+                        <i class="fa-solid fa-trash-can"></i> Clear logs
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Category Tabs -->
+            <div class="logs-tabs" style="display: flex; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; margin-top: 0.75rem;">
+                <button class="tab-btn active" id="tab-btn-boys" data-tab="Male" style="background: transparent; border: none; color: var(--text-secondary); font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: var(--transition);">
+                    ♂ Male Attendance
+                </button>
+                <button class="tab-btn" id="tab-btn-girls" data-tab="Female" style="background: transparent; border: none; color: var(--text-secondary); font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: var(--transition);">
+                    ♀ Female Attendance
+                </button>
+                <button class="tab-btn" id="tab-btn-intruders" data-tab="Unknown" style="background: transparent; border: none; color: var(--text-secondary); font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: var(--transition);">
+                    🚨 Intruder Alerts
+                </button>
+            </div>
+            
+            <div class="table-wrapper">
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>Biometric Capture</th>
+                            <th>Identity Profile</th>
+                            <th>Timestamp</th>
+                            <th>Security Clearance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-table-body">
+                        <!-- JS will inject rows here -->
+                    </tbody>
+                </table>
+                <div class="logs-empty" id="logs-empty-msg">
+                    <p>No records found in this category.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 Aura Guard. Built with Flask, OpenCV YuNet/SFace ONNX models, and SQLite. Gate chimes enabled.</p>
+        </footer>
+    </div>
+
+    <!-- Hidden audio element for unlock chime -->
+    <audio id="unlock-chime" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" type="audio/wav">
+    </audio>
+
+    <!-- Toast Notification System -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

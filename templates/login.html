@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Locked | Aura Guard Security</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS (Reusing existing global styles) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg-dark);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+        }
+
+        .login-header .icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .password-input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .password-input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .password-input-group input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 2.8rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .password-input-group input:focus {
+            border-color: var(--primary);
+            background: rgba(0, 242, 254, 0.05);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+        }
+
+        .password-input-group input:focus + i {
+            color: var(--primary);
+        }
+
+        .btn-unlock {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient-primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-primary);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-unlock:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 242, 254, 0.4);
+        }
+
+        .error-message {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient background glows -->
+    <div class="ambient-glow" style="top: -10%; left: 10%;"></div>
+    <div class="ambient-glow" style="bottom: -20%; right: -10%; background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 60%);"></div>
+
+    <div class="login-container glass animate-slide-up-1">
+        <div class="login-header">
+            <i class="fa-solid fa-lock icon"></i>
+            <h1>SYSTEM LOCKED</h1>
+            <p>Aura Guard Biometric Security Console</p>
+        </div>
+
+        {% if error %}
+        <div class="error-message animate-fade-in">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form action="/login" method="POST">
+            <div class="password-input-group">
+                <input type="password" name="password" placeholder="Enter Security Code" required autocomplete="off" autofocus>
+                <i class="fa-solid fa-key"></i>
+            </div>
+            
+            <button type="submit" class="btn-unlock">
+                <i class="fa-solid fa-unlock-keyhole"></i>
+                Unlock Interface
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>
