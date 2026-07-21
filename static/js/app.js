@@ -532,4 +532,44 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, Math.max(stepTime, 25));
     }
+
+    // ----------------------------------------------------
+    // Time-Based Access Control
+    // ----------------------------------------------------
+    const timeStart = document.getElementById('time-start');
+    const timeEnd = document.getElementById('time-end');
+    const toggleTimeControl = document.getElementById('toggle-time-control');
+    const btnSaveTime = document.getElementById('btn-save-time');
+
+    if (timeStart && timeEnd && toggleTimeControl && btnSaveTime) {
+        // Load settings
+        fetch('/get_time_config')
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) return;
+                timeStart.value = data.start_time;
+                timeEnd.value = data.end_time;
+                toggleTimeControl.checked = data.enabled;
+            });
+
+        // Save settings
+        btnSaveTime.addEventListener('click', () => {
+            fetch('/set_time_config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    enabled: toggleTimeControl.checked,
+                    start_time: timeStart.value,
+                    end_time: timeEnd.value
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) showToast(data.error, 'error');
+                else showToast(data.message, 'success');
+            })
+            .catch(() => showToast('Failed to save time config', 'error'));
+        });
+    }
+
 });

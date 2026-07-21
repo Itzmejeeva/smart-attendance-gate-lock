@@ -201,8 +201,25 @@
 
         <!-- Attendance Logs Section (Hidden for Privacy) -->
         <section class="panel glass logs-panel animate-slide-up-3" id="admin-logs-panel" style="display: none;">
-            <div class="logs-header" style="border-bottom: none; padding-bottom: 0; display: flex; justify-content: space-between; align-items: center;">
+            <div class="logs-header" style="border-bottom: none; padding-bottom: 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                 <h2><i class="fa-solid fa-list-check"></i> Security Check Logs</h2>
+                
+                <!-- Time-Based Access Control -->
+                <div class="time-control-box" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.2); padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--panel-border);">
+                    <i class="fa-regular fa-clock" style="color: var(--primary);"></i>
+                    <label style="font-size: 0.8rem; font-weight: 600; margin-right: 0.5rem;">Access Hours:</label>
+                    
+                    <input type="time" id="time-start" class="form-input" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; width: auto; background: transparent; border: 1px solid rgba(255,255,255,0.1);">
+                    <span style="font-size: 0.8rem;">to</span>
+                    <input type="time" id="time-end" class="form-input" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; width: auto; background: transparent; border: 1px solid rgba(255,255,255,0.1);">
+                    
+                    <label class="toggle-switch" style="margin-left: 0.5rem;" title="Enable strict time checking">
+                        <input type="checkbox" id="toggle-time-control">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <button class="action-btn-sm" id="btn-save-time" style="padding: 0.35rem 0.75rem; margin-left: 0.5rem;" title="Save Time Config"><i class="fa-solid fa-save"></i></button>
+                </div>
+
                 <div class="log-actions" style="display: flex; gap: 1.25rem;">
                     <button class="clear-logs-btn" id="btn-download-pdf" title="Download current category list as PDF" style="background: transparent; border: none; color: var(--secondary); font-family: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: var(--transition);">
                         <i class="fa-solid fa-file-pdf"></i> Export Login PDF

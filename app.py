@@ -33,6 +33,11 @@ recognizer = None
 # SFace cosine similarity threshold (raised to 0.65 for strict security to prevent false positive matches)
 MATCH_THRESHOLD = 0.65
 
+# Time-Based Access Control Globals
+TIME_CONTROL_ENABLED = False
+ACCESS_START_TIME = "09:00"
+ACCESS_END_TIME = "17:00"
+
 def download_model(url, path, name):
     if not os.path.exists(MODEL_DIR):
         os.makedirs(MODEL_DIR)
@@ -272,6 +277,14 @@ last_log_times = {}
 
 @app.route('/verify', methods=['POST'])
 def verify():
+    if TIME_CONTROL_ENABLED:
+        now_str = datetime.now().strftime("%H:%M")
+        if not (ACCESS_START_TIME <= now_str <= ACCESS_END_TIME):
+            return jsonify({
+                'error': 'Access Denied: Outside of Allowed Hours.',
+                'status': 'Out of Hours'
+            }), 403
+
     if detector is None or recognizer is None:
         return jsonify({'error': 'Face recognition models are not loaded.'}), 500
 
@@ -773,6 +786,29 @@ def export_pdf():
     response.headers['Content-Disposition'] = f'attachment; filename={fn}'
     return response
 
+@app.route('/get_time_config', methods=['GET'])
+def get_time_config():
+    if not session.get('authenticated'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    return jsonify({
+        'enabled': TIME_CONTROL_ENABLED,
+        'start_time': ACCESS_START_TIME,
+        'end_time': ACCESS_END_TIME
+    })
+
+@app.route('/set_time_config', methods=['POST'])
+def set_time_config():
+    if not session.get('authenticated'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    global TIME_CONTROL_ENABLED, ACCESS_START_TIME, ACCESS_END_TIME
+    data = request.json
+    TIME_CONTROL_ENABLED = data.get('enabled', False)
+    ACCESS_START_TIME = data.get('start_time', '09:00')
+    ACCESS_END_TIME = data.get('end_time', '17:00')
+    
+    return jsonify({'message': 'Time configuration saved successfully!'})
+
 if __name__ == '__main__':
     # Run the server on all interfaces so it can be accessed over local network
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)
