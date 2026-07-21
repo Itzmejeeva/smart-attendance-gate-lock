@@ -36,6 +36,9 @@
                     <span class="status-indicator online"></span>
                     <span class="status-text">YuNet & SFace Online</span>
                 </div>
+                <button onclick="toggleAdminMode()" id="admin-login-btn" style="background: rgba(14, 165, 233, 0.1); color: var(--primary); border: 1px solid rgba(14, 165, 233, 0.2); padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: var(--transition);">
+                    <i class="fa-solid fa-user-shield"></i> Admin Login
+                </button>
                 <a href="/logout" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; transition: var(--transition);">
                     <i class="fa-solid fa-lock"></i> Lock System
                 </a>
@@ -196,8 +199,8 @@
             </section>
         </main>
 
-        <!-- Attendance Logs Section -->
-        <section class="panel glass logs-panel animate-slide-up-3">
+        <!-- Attendance Logs Section (Hidden for Privacy) -->
+        <section class="panel glass logs-panel animate-slide-up-3" id="admin-logs-panel" style="display: none;">
             <div class="logs-header" style="border-bottom: none; padding-bottom: 0; display: flex; justify-content: space-between; align-items: center;">
                 <h2><i class="fa-solid fa-list-check"></i> Security Check Logs</h2>
                 <div class="log-actions" style="display: flex; gap: 1.25rem;">
@@ -259,5 +262,24 @@
 
     <!-- Custom JavaScript -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        function toggleAdminMode() {
+            const logsPanel = document.getElementById('admin-logs-panel');
+            if (logsPanel.style.display === 'none' || logsPanel.style.display === '') {
+                const pwd = prompt("🔐 Enter Admin Password to view logs:");
+                if (pwd === "admin123") {
+                    logsPanel.style.display = 'block';
+                    // Scroll to logs
+                    setTimeout(() => { logsPanel.scrollIntoView({ behavior: 'smooth' }); }, 100);
+                    showToast("Admin Access Granted. Logs are now visible.", "success");
+                } else if (pwd !== null) {
+                    showToast("Access Denied: Incorrect Password.", "error");
+                }
+            } else {
+                logsPanel.style.display = 'none';
+                showToast("Admin Mode Locked. Logs hidden.", "info");
+            }
+        }
+    </script>
 </body>
 </html>
