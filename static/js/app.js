@@ -121,6 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
     async function captureAndVerify(isAuto = false) {
         if (!webcamStream || isGateUnlocked) return;
         
+        // Enforce Liveness (Blink Detection) if in Auto mode
+        if (isAuto && !window.livenessPassed) {
+            return;
+        }
+        
         // Draw frame to canvas
         const context = canvas.getContext('2d');
         canvas.width = video.videoWidth;
