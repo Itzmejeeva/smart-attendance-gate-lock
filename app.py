@@ -210,7 +210,7 @@ def register():
             for face in faces:
                 bbox = face[0:4].astype(int)
                 fw, fh = bbox[2], bbox[3]
-                if fw >= 75 and fh >= 75: # Only count faces larger than 75x75 pixels
+                if fw >= 110 and fh >= 110: # Only count faces larger than 110x110 pixels
                     valid_faces.append(face)
                     
         if len(valid_faces) == 0:
@@ -314,7 +314,7 @@ def verify():
         if faces is not None:
             for face in faces:
                 bbox = face[0:4].astype(int)
-                if bbox[2] >= 60 and bbox[3] >= 60:
+                if bbox[2] >= 110 and bbox[3] >= 110:
                     valid_faces.append(face)
 
         # If no valid faces are detected

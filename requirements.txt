@@ -1,5 +1,7 @@
 Flask==3.0.3
 numpy>=1.26.0
-opencv-python>=4.9.0.80,<5.0
+opencv-python-headless>=4.9.0.80,<5.0
 requests>=2.31.0
 fpdf2>=2.8.7
+gunicorn==22.0.0
+flask-cors==4.0.0
